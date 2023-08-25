@@ -83,6 +83,8 @@ export const UsersignIn =async(req,res)=>{
                                 res.cookie("t",token);
                                 const {name,email,role,data,_id} = user_data
                                 res.status(200).json({details:{name,email,role,data,id:_id},token,isOk:1});
+                        }else{
+                            res.json({message:"Password is worng !",isOk:0});
                         }
                 })
         }
@@ -171,4 +173,23 @@ export const AddNotes  = async(req,res)=>{
        console.log(error)
       return res.json({message:"Somthing Went Worng",isOk:0})
     }
+}
+
+export const RemoveNote = async(req,res)=>{
+       let payload = req.body;
+    
+       try {
+        let valid_user = await UserModel.findOne({email:payload.email});
+        if(!valid_user){
+           return res.json({message:"User not exist !",isOk:0})
+        }
+        user = valid_user.notes.filter((item)=>item.id!=payload.id);
+        await UserModel.findOneAndUpdate({email:payload.email},{$set:user}).then(()=>{
+            res.status(201).json({message:"Notes deleted Successfully",status:1})
+        })
+       } catch (error) {
+        console.log(error)
+        return res.json({message:"Somthing Went Worng",isOk:0})
+       }
+
 }
