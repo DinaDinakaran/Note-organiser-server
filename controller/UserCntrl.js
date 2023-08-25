@@ -193,3 +193,16 @@ export const RemoveNote = async(req,res)=>{
        }
 
 }
+export const getAllNote = async(req,res)=>{
+    let payload = req.body;
+   try {
+    let valid_user = await UserModel.findOne({email:payload.email});
+    if(!valid_user){
+       return res.json({message:"User not exist !",isOk:0})
+    }
+    return res.send(valid_user.data,isOk=1)
+   } catch (error) {
+    console.log(error)
+    return res.json({message:"Somthing Went Worng",isOk:0})
+   }
+}
