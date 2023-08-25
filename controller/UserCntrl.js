@@ -164,7 +164,7 @@ export const AddNotes  = async(req,res)=>{
         }
         valid_user.notes.push(payload.data);
        await UserModel.findOneAndUpdate({email:payload.email},{$set:valid_user}).then(()=>{
-           res.status(201).json({message:"Notes Successfully",status:1})
+           res.status(201).json({message:"Notes Successfully",isOk:1})
        }).catch((err)=>{
            console.log("err for booking",err);
            res.json({message:"Somthing Went Worng",isOk:0})
@@ -183,8 +183,10 @@ export const RemoveNote = async(req,res)=>{
         if(!valid_user){
            return res.json({message:"User not exist !",isOk:0})
         }
-       let user = valid_user.notes.filter((item)=>item.id!=payload.id);
-      valid_user.data= user
+        let value =[];
+        valid_user.notes= valid_user.notes.filter((item)=>item.id!=payload.id);
+
+       //console.log(valid_user)
         await UserModel.findOneAndUpdate({email:payload.email},{$set:valid_user}).then(()=>{
             res.status(201).json({message:"Notes deleted Successfully",isOk:1})
         })
@@ -201,7 +203,8 @@ export const getAllNote = async(req,res)=>{
     if(!valid_user){
        return res.json({message:"User not exist !",isOk:0})
     }
-    return res.send(valid_user.data,isOk=1)
+   // console.log(valid_user)
+    return res.json({data:valid_user.notes,isOk:1})
    } catch (error) {
     console.log(error)
     return res.json({message:"Somthing Went Worng",isOk:0})
