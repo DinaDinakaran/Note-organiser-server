@@ -183,9 +183,10 @@ export const RemoveNote = async(req,res)=>{
         if(!valid_user){
            return res.json({message:"User not exist !",isOk:0})
         }
-        user = valid_user.notes.filter((item)=>item.id!=payload.id);
-        await UserModel.findOneAndUpdate({email:payload.email},{$set:user}).then(()=>{
-            res.status(201).json({message:"Notes deleted Successfully",status:1})
+       let user = valid_user.notes.filter((item)=>item.id!=payload.id);
+      valid_user.data= user
+        await UserModel.findOneAndUpdate({email:payload.email},{$set:valid_user}).then(()=>{
+            res.status(201).json({message:"Notes deleted Successfully",isOk:1})
         })
        } catch (error) {
         console.log(error)
