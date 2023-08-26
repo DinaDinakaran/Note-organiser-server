@@ -210,3 +210,24 @@ export const getAllNote = async(req,res)=>{
     return res.json({message:"Somthing Went Worng",isOk:0})
    }
 }
+
+export const Updatenote = async(req,res)=>{
+    let payload = req.body;
+    try {
+        let valid_user = await UserModel.findOne({email:payload.email});
+        if(!valid_user){
+           return res.json({message:"User not exist !",isOk:0})
+        }
+        const indexById = valid_user.notes.findIndex(note => note.id === payload.id);
+        //console.log(payload.data)
+        valid_user.notes.splice(indexById,1,payload.data)
+      // console.log(valid_user.notes);
+        await UserModel.findOneAndUpdate({email:payload.email},{$set:valid_user}).then(()=>{
+            res.status(201).json({message:"Notes Updated Successfully",isOk:1})
+        })
+    } catch (error) {
+        
+    }
+    
+
+}
